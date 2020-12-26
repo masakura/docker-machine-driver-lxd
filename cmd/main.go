@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/docker/machine/libmachine/drivers/plugin"
+	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd"
+)
 
 func main() {
-	fmt.Println("Hello!")
+	plugin.RegisterDriver(lxd.NewDriver())
 }
