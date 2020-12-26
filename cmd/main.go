@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	plugin.RegisterDriver(lxd.NewDriver())
+	plugin.RegisterDriver(lxd.NewDriver("", ""))
 }

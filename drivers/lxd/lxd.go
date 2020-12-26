@@ -54,6 +54,6 @@ func (d Driver) Stop() error {
 	panic("implement me")
 }
 
-func NewDriver() drivers.Driver {
-	return Driver{}
+func NewDriver(hostName string, storePath string) *Driver {
+	return &Driver{}
 }
