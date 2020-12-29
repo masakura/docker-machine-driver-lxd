@@ -1,0 +1,13 @@
+image: go
+
+before_script:
+  - go get
+
+build:
+  script:
+    - mkdir dist
+    - go build -o dist/docker-machine-driver-lxd-Linux-x86_64
+  artifacts:
+    name: binary
+    paths:
+      - dist
