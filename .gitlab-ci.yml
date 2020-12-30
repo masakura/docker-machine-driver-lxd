@@ -1,4 +1,4 @@
-image: go
+image: golang
 
 before_script:
   - go get
