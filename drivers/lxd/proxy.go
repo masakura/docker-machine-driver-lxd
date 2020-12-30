@@ -83,8 +83,11 @@ func (p *DriverProxy) GetSSHHostname() (string, error) {
 		return "", err
 	}
 
-	network := containerState.Network["eth0"]
-	return network.Addresses[0].Address, nil
+	addresses := containerState.Network["eth0"].Addresses
+	if len(addresses) > 0 {
+		return addresses[0].Address, nil
+	}
+	return "", nil
 }
 
 func (p *DriverProxy) GetSSHKeyProvider() ssh.SSHKeyProvider {
@@ -103,6 +106,10 @@ func (p *DriverProxy) GetURL() (string, error) {
 	hostname, err := p.GetSSHHostname()
 	if err != nil {
 		return "", err
+	}
+
+	if hostname == "" {
+		return "", nil
 	}
 
 	return "tcp://" + hostname + ":2376", nil

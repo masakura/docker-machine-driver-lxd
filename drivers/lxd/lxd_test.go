@@ -133,6 +133,27 @@ func TestGetURL(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestGetURLAddressNotFound(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockServer := mock_lxd.NewMockInstanceServer(controller)
+	mockServer.EXPECT().GetContainerState("docker-machine-host1").Return(&api.ContainerState{
+		Network: map[string]api.ContainerStateNetwork{
+			"eth0": {
+				Addresses: []api.ContainerStateNetworkAddress{},
+			},
+		},
+	}, "", nil)
+
+	driver := CreateTestingDriverProxy("host1", mockServer, nil)
+
+	url, err := driver.GetURL()
+
+	assert.Equal(t, "", url)
+	assert.Nil(t, err)
+}
+
 func TestGet(t *testing.T) {
 	proxy := CreateTestingDriverProxy("host1", nil, nil)
 
