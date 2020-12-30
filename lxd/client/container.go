@@ -27,6 +27,15 @@ func (c *LxdContainer) Stop() error {
 	}, "")
 }
 
+func (c *LxdContainer) Restart() error {
+	client := c.Client
+
+	return client.UpdateContainerState(c.Name, api.ContainerStatePut{
+		Action:  "restart",
+		Timeout: -1,
+	}, "")
+}
+
 func (c *LxdContainer) GetState() (*api.ContainerState, string, error) {
 	client := c.Client
 

@@ -125,6 +125,10 @@ func (p *DriverProxy) Stop() error {
 	return p.getContainer().Stop()
 }
 
+func (p *DriverProxy) Restart() error {
+	return p.getContainer().Restart()
+}
+
 func (p *DriverProxy) getContainerName() string {
 	return "docker-machine-" + p.driver.GetMachineName()
 }

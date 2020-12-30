@@ -78,8 +78,7 @@ func (d *Driver) Remove() error {
 }
 
 func (d *Driver) Restart() error {
-	log.Error("Restart()")
-	panic("implement me")
+	return NewDriverProxy(d, nil, nil).Restart()
 }
 
 func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {

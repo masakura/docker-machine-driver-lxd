@@ -185,6 +185,25 @@ func TestStop(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestRestart(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockServer := mock_lxd.NewMockInstanceServer(controller)
+	mockOperation := mock_lxd.NewMockOperation(controller)
+	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+		Action:  "restart",
+		Timeout: -1,
+	}, "").Return(mockOperation, nil)
+	mockOperation.EXPECT().Wait().Return(nil)
+
+	driver := CreateTestingDriverProxy("host1", mockServer, nil)
+
+	err := driver.Restart()
+
+	assert.Nil(t, err)
+}
+
 func TestStart(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
