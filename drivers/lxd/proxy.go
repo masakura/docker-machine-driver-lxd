@@ -117,6 +117,10 @@ func (p *DriverProxy) DriverName() string {
 	return "lxd"
 }
 
+func (p *DriverProxy) Start() error {
+	return p.getContainer().Start()
+}
+
 func (p *DriverProxy) Stop() error {
 	return p.getContainer().Stop()
 }
