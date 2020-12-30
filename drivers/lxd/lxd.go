@@ -87,8 +87,7 @@ func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 }
 
 func (d *Driver) Start() error {
-	log.Error("Start()")
-	panic("implement me")
+	return NewDriverProxy(d, nil, nil).Start()
 }
 
 func (d *Driver) Stop() error {
