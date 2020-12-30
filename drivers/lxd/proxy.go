@@ -112,6 +112,11 @@ func (p *DriverProxy) DriverName() string {
 	return "lxd"
 }
 
+func (p *DriverProxy) Stop() error {
+	container := p.lxdClient.GetContainer("docker-machine-" + p.driver.GetMachineName())
+	return container.Stop()
+}
+
 func NewDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
 	return &DriverProxy{
 		driver:    driver,

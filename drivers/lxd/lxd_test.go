@@ -145,6 +145,25 @@ func TestDriverName(t *testing.T) {
 	assert.Equal(t, "lxd", proxy.DriverName())
 }
 
+func TestStop(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockServer := mock_lxd.NewMockInstanceServer(controller)
+	mockOperation := mock_lxd.NewMockOperation(controller)
+	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+		Action:  "stop",
+		Timeout: -1,
+	}, "").Return(mockOperation, nil)
+	mockOperation.EXPECT().Wait().Return(nil)
+
+	driver := CreateTestingDriverProxy("host1", mockServer, nil)
+
+	err := driver.Stop()
+
+	assert.Nil(t, err)
+}
+
 func CreateTestingDriverProxy(name string, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
 	return NewDriverProxy(&Driver{
 		BaseDriver: newBaseDriver(name, ""),
