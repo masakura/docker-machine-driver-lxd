@@ -1,12 +1,12 @@
 image: golang
 
 before_script:
-  - go get
+  - go get -u all
 
 build:
   script:
     - mkdir dist
-    - go build -o dist/docker-machine-driver-lxd-Linux-x86_64
+    - go build -o dist/docker-machine-driver-lxd-Linux-x86_64 cmd/main.go
   artifacts:
     name: binary
     paths:
