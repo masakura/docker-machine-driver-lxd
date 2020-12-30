@@ -68,8 +68,7 @@ func (d *Driver) GetState() (state.State, error) {
 }
 
 func (d *Driver) Kill() error {
-	log.Error("Kill()")
-	panic("implement me")
+	return NewDriverProxy(d, nil, nil).Kill()
 }
 
 func (d *Driver) Remove() error {
