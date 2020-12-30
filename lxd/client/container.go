@@ -36,6 +36,12 @@ func (c *LxdContainer) Restart() error {
 	}, "")
 }
 
+func (c *LxdContainer) Delete() error {
+	client := c.Client
+
+	return client.DeleteContainer(c.Name)
+}
+
 func (c *LxdContainer) GetState() (*api.ContainerState, string, error) {
 	client := c.Client
 

@@ -129,6 +129,15 @@ func (p *DriverProxy) Restart() error {
 	return p.getContainer().Restart()
 }
 
+func (p *DriverProxy) Remove() error {
+	container := p.getContainer()
+
+	// ignore stop error. (`Error: The container is already stopped`)
+	_ = container.Stop()
+
+	return container.Delete()
+}
+
 func (p *DriverProxy) getContainerName() string {
 	return "docker-machine-" + p.driver.GetMachineName()
 }

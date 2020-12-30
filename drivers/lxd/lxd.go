@@ -73,8 +73,7 @@ func (d *Driver) Kill() error {
 }
 
 func (d *Driver) Remove() error {
-	log.Error("Remove()")
-	panic("implement me")
+	return NewDriverProxy(d, nil, nil).Remove()
 }
 
 func (d *Driver) Restart() error {
