@@ -4,7 +4,7 @@ variables:
   GOPATH: $CI_PROJECT_DIR/go
 
 before_script:
-  - PATH=$PATH:$GOPATH
+  - PATH=$PATH:$GOPATH/bin
   - go get -u all
 
 build:
