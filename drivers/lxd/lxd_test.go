@@ -133,6 +133,27 @@ func TestGetURL(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestGetURLAddressNotFound(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockServer := mock_lxd.NewMockInstanceServer(controller)
+	mockServer.EXPECT().GetContainerState("docker-machine-host1").Return(&api.ContainerState{
+		Network: map[string]api.ContainerStateNetwork{
+			"eth0": {
+				Addresses: []api.ContainerStateNetworkAddress{},
+			},
+		},
+	}, "", nil)
+
+	driver := CreateTestingDriverProxy("host1", mockServer, nil)
+
+	url, err := driver.GetURL()
+
+	assert.Equal(t, "", url)
+	assert.Nil(t, err)
+}
+
 func TestGet(t *testing.T) {
 	proxy := CreateTestingDriverProxy("host1", nil, nil)
 
@@ -143,6 +164,25 @@ func TestDriverName(t *testing.T) {
 	proxy := CreateTestingDriverProxy("host1", nil, nil)
 
 	assert.Equal(t, "lxd", proxy.DriverName())
+}
+
+func TestStop(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockServer := mock_lxd.NewMockInstanceServer(controller)
+	mockOperation := mock_lxd.NewMockOperation(controller)
+	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+		Action:  "stop",
+		Timeout: -1,
+	}, "").Return(mockOperation, nil)
+	mockOperation.EXPECT().Wait().Return(nil)
+
+	driver := CreateTestingDriverProxy("host1", mockServer, nil)
+
+	err := driver.Stop()
+
+	assert.Nil(t, err)
 }
 
 func CreateTestingDriverProxy(name string, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {

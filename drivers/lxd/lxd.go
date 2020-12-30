@@ -92,8 +92,7 @@ func (d *Driver) Start() error {
 }
 
 func (d *Driver) Stop() error {
-	log.Error("Stop()")
-	panic("implement me")
+	return NewDriverProxy(d, nil, nil).Stop()
 }
 
 func NewDriver(hostName string, storePath string) *Driver {

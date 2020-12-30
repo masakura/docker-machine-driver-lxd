@@ -18,6 +18,15 @@ func (c *LxdContainer) Start() error {
 	}, "")
 }
 
+func (c *LxdContainer) Stop() error {
+	client := c.Client
+
+	return client.UpdateContainerState(c.Name, api.ContainerStatePut{
+		Action:  "stop",
+		Timeout: -1,
+	}, "")
+}
+
 func (c *LxdContainer) GetState() (*api.ContainerState, string, error) {
 	client := c.Client
 

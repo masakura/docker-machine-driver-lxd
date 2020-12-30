@@ -26,7 +26,7 @@ func (p *DriverProxy) Create() error {
 	}
 
 	log.Info("Creating LXD container...")
-	container, err := c.CreateContainer("docker-machine-"+d.MachineName, api.ContainerSource{
+	container, err := c.CreateContainer(p.getContainerName(), api.ContainerSource{
 		Type:     "image",
 		Mode:     "pull",
 		Server:   "https://cloud-images.ubuntu.com/releases",
@@ -65,9 +65,7 @@ func (p *DriverProxy) Create() error {
 }
 
 func (p *DriverProxy) GetState() (state.State, error) {
-	container := p.lxdClient.GetContainer("docker-machine-" + p.driver.MachineName)
-
-	containerState, _, err := container.GetState()
+	containerState, _, err := p.getContainer().GetState()
 	if err != nil {
 		return state.None, err
 	}
@@ -83,8 +81,11 @@ func (p *DriverProxy) GetSSHHostname() (string, error) {
 		return "", err
 	}
 
-	network := containerState.Network["eth0"]
-	return network.Addresses[0].Address, nil
+	addresses := containerState.Network["eth0"].Addresses
+	if len(addresses) > 0 {
+		return addresses[0].Address, nil
+	}
+	return "", nil
 }
 
 func (p *DriverProxy) GetSSHKeyProvider() ssh.SSHKeyProvider {
@@ -105,11 +106,27 @@ func (p *DriverProxy) GetURL() (string, error) {
 		return "", err
 	}
 
+	if hostname == "" {
+		return "", nil
+	}
+
 	return "tcp://" + hostname + ":2376", nil
 }
 
 func (p *DriverProxy) DriverName() string {
 	return "lxd"
+}
+
+func (p *DriverProxy) Stop() error {
+	return p.getContainer().Stop()
+}
+
+func (p *DriverProxy) getContainerName() string {
+	return "docker-machine-" + p.driver.GetMachineName()
+}
+
+func (p *DriverProxy) getContainer() *client.LxdContainer {
+	return p.lxdClient.GetContainer(p.getContainerName())
 }
 
 func NewDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
