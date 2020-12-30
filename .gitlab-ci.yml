@@ -1,18 +1,32 @@
 image: golang
 
-before_script:
-  - go get -u all
+stages:
+  - build
+  - release
 
-build:
+variables:
+  BINARY_AMD64: docker-machine-driver-lxd-Linux-x86_64
+
+before_script:
+  - which go && go get -u all
+
+.build: &build
+  stage: build
   script:
     - mkdir dist
-    - go build -o dist/docker-machine-driver-lxd-Linux-x86_64 cmd/main.go
+    - go build -o dist/$BINARY_AMD64 cmd/main.go
+
+build:
+  <<: *build
   artifacts:
     name: binary
     paths:
       - dist
+  except:
+    - tags
 
 test:
+  stage: build
   script:
     - go get github.com/jstemmer/go-junit-report
     - go test -v ./... | go-junit-report > junit.xml
@@ -23,3 +37,29 @@ test:
     reports:
       junit: junit.xml
     when: always
+
+build:release:
+  <<: *build
+  artifacts:
+    name: binary
+    paths:
+      - dist
+    expire_in: never
+  only:
+    - tags
+
+release:
+  stage: release
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo
+    - |-
+      curl --request POST --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" \
+        --data name="linux amd64" \
+        --data url="$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_REF_NAME/raw/dist/$BINARY_AMD64?job=build:release" \
+        --data filepath="/bin/$BINARY_AMD64" \
+        $CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_REF_NAME/assets/links
+  dependencies: ['build:release']
+  only:
+    - tags
