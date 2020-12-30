@@ -1,4 +1,5 @@
 /dist
+/junit.xml
 
 # Created by .ignore support plugin (hsz.mobi)
 *.exe

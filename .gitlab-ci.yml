@@ -11,3 +11,10 @@ build:
     name: binary
     paths:
       - dist
+
+test:
+  script:
+    - go test -v ./... | go-junit-report > junit.xml
+  artifacts:
+    reports:
+      junit: junit.xml

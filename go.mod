@@ -14,6 +14,7 @@ require (
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/intel-go/cpuid v0.0.0-20200819041909-2aa72927c3e2 // indirect
+	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/juju/webbrowser v1.0.0 // indirect
 	github.com/lxc/lxd v0.0.0-20201229233939-bf9cd0f88f0f
 	github.com/moby/term v0.0.0-20201216013528-df9cb8a40635 // indirect
