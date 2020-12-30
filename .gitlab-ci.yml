@@ -14,8 +14,7 @@ build:
 
 test:
   script:
-    - echo $GOPATH
-    - echo $PATH
+    - go get github.com/jstemmer/go-junit-report
     - go test -v ./... | go-junit-report > junit.xml
   artifacts:
     reports:
