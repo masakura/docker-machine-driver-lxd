@@ -2,16 +2,10 @@ package lxd
 
 import (
 	"github.com/docker/machine/libmachine/drivers"
+	"github.com/docker/machine/libmachine/log"
 	"github.com/docker/machine/libmachine/mcnflag"
 	"github.com/docker/machine/libmachine/state"
 	"github.com/pkg/errors"
-	"log"
-	"os"
-)
-
-var (
-	outfile, _ = os.Create("log.txt")
-	l          = log.New(outfile, "", 0)
 )
 
 type Driver struct {
@@ -44,7 +38,7 @@ func (d *Driver) GetSSHHostname() (string, error) {
 		return "", errors.New(hostname)
 	}
 
-	l.Println("GetSSHHostname() => " + hostname)
+	log.Debug("GetSSHHostname() => " + hostname)
 
 	return hostname, nil
 }
@@ -56,11 +50,11 @@ func (d *Driver) GetSSHUsername() string {
 func (d *Driver) GetURL() (string, error) {
 	url, err := NewDriverProxy(d, nil, nil).GetURL()
 	if err != nil {
-		l.Panic(err)
+		log.Error(err)
 		return "", err
 	}
 
-	l.Println("GetURL() => " + url)
+	log.Debug("GetURL() => " + url)
 	return url, nil
 }
 
@@ -69,22 +63,22 @@ func (d *Driver) GetState() (state.State, error) {
 	if err != nil {
 		return state.None, err
 	}
-	l.Println("GetState() => " + machineState.String())
+	log.Debug("GetState() => " + machineState.String())
 	return machineState, err
 }
 
 func (d *Driver) Kill() error {
-	l.Panic("Kill()")
+	log.Error("Kill()")
 	panic("implement me")
 }
 
 func (d *Driver) Remove() error {
-	l.Panic("Remove()")
+	log.Error("Remove()")
 	panic("implement me")
 }
 
 func (d *Driver) Restart() error {
-	l.Panic("Restart()")
+	log.Error("Restart()")
 	panic("implement me")
 }
 
@@ -93,12 +87,12 @@ func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 }
 
 func (d *Driver) Start() error {
-	l.Panic("Start()")
+	log.Error("Start()")
 	panic("implement me")
 }
 
 func (d *Driver) Stop() error {
-	l.Panic("Stop()")
+	log.Error("Stop()")
 	panic("implement me")
 }
 

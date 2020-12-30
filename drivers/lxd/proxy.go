@@ -1,6 +1,7 @@
 package lxd
 
 import (
+	"github.com/docker/machine/libmachine/log"
 	"github.com/docker/machine/libmachine/state"
 	lxd "github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
@@ -24,6 +25,7 @@ func (p *DriverProxy) Create() error {
 		return err
 	}
 
+	log.Info("Creating LXD container...")
 	container, err := c.CreateContainer("docker-machine-"+d.MachineName, api.ContainerSource{
 		Type:     "image",
 		Mode:     "pull",
@@ -35,6 +37,7 @@ func (p *DriverProxy) Create() error {
 		return err
 	}
 
+	log.Info("Configure LXD container...")
 	settings, tag, err := container.Get()
 	if err != nil {
 		return err
@@ -52,6 +55,7 @@ func (p *DriverProxy) Create() error {
 
 	container.Update(settingsBuilder.Writable(), tag)
 
+	log.Info("Starting LXD container...")
 	err = container.Start()
 	if err != nil {
 		return err
