@@ -1,6 +1,10 @@
 image: golang
 
+variables:
+  GOPATH: $CI_PROJECT_DIR/go
+
 before_script:
+  - PATH=$PATH:$GOPATH
   - go get -u all
 
 build:
