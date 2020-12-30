@@ -80,6 +80,20 @@ func (c *SyncClient) UpdateContainer(name string, container api.ContainerPut, ET
 	return operation.Wait()
 }
 
+func (c *SyncClient) DeleteContainer(name string) error {
+	connection, err := c.GetConnection()
+	if err != nil {
+		return err
+	}
+
+	operation, err := connection.DeleteContainer(name)
+	if err != nil {
+		return err
+	}
+
+	return operation.Wait()
+}
+
 func NewSyncClientWith(connection lxd.InstanceServer) *SyncClient {
 	return &SyncClient{
 		InstanceServer: connection,
