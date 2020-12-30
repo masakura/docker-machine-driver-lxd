@@ -45,6 +45,8 @@ build:release:
     paths:
       - dist
     expire_in: never
+  only:
+    - tags
 
 release:
   stage: release
@@ -57,5 +59,7 @@ release:
         --data name="linux amd64" \
         --data url="$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_REF_NAME/raw/dist/$BINARY_AMD64?job=build:release" \
         --data filepath="/bin/$BINARY_AMD64" \
-        $CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/v0.1.0/assets/links
+        $CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_REF_NAME/assets/links
   dependencies: ['build:release']
+  only:
+    - tags
