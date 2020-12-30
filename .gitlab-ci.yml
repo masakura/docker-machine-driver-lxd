@@ -17,5 +17,9 @@ test:
     - go get github.com/jstemmer/go-junit-report
     - go test -v ./... | go-junit-report > junit.xml
   artifacts:
+    paths:
+      - junit.xml
+    expose_as: unit test
     reports:
       junit: junit.xml
+    when: always
