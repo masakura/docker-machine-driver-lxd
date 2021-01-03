@@ -7,13 +7,15 @@ import (
 	"github.com/lxc/lxd/shared/api"
 	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/utils"
 	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/client"
+	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/socket"
 	"gitlab.com/masakura/docker-machine-driver-lxd/ssh"
 )
 
 type DriverProxy struct {
-	driver    *Driver
-	lxdClient *client.LxdClient
-	ssh       ssh.SSHKeyProvider
+	driver     *Driver
+	lxdClient  *client.LxdClient
+	ssh        ssh.SSHKeyProvider
+	unixSocket socket.UnixSocketResolver
 }
 
 func (p *DriverProxy) Create() error {
