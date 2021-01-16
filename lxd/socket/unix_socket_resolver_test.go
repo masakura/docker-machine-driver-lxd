@@ -2,11 +2,12 @@ package socket
 
 import (
 	"github.com/stretchr/testify/assert"
+	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/file"
 	"testing"
 )
 
 func TestResolveBySnap(t *testing.T) {
-	files := NewMockFileResolver([]string{
+	files := file.NewMockFileResolver([]string{
 		"/var/snap/lxd/common/lxd/unix.socket",
 	})
 	target := NewUnixSocketResolver(files)
@@ -15,7 +16,7 @@ func TestResolveBySnap(t *testing.T) {
 }
 
 func TestResolveByLinuxPackage(t *testing.T) {
-	files := NewMockFileResolver([]string{
+	files := file.NewMockFileResolver([]string{
 		"/var/lib/lxd/unix.socket",
 	})
 	target := NewUnixSocketResolver(files)

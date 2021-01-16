@@ -1,7 +1,9 @@
 package socket
 
+import "gitlab.com/masakura/docker-machine-driver-lxd/lxd/file"
+
 type PathUnixSocketResolver struct {
-	fileResolver FileResolver
+	fileResolver file.FileResolver
 	path         string
 }
 
@@ -12,7 +14,7 @@ func (r PathUnixSocketResolver) Resolve() string {
 	return ""
 }
 
-func NewPathUnixSocketResolver(fileResolver FileResolver, path string) PathUnixSocketResolver {
+func NewPathUnixSocketResolver(fileResolver file.FileResolver, path string) PathUnixSocketResolver {
 	return PathUnixSocketResolver{
 		fileResolver: fileResolver,
 		path:         path,

@@ -1,4 +1,4 @@
-package socket
+package file
 
 type MockFileResolver struct {
 	paths []string
