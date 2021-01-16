@@ -1,4 +1,4 @@
-package socket
+package file
 
 import (
 	"github.com/docker/machine/libmachine/log"

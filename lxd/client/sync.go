@@ -3,6 +3,7 @@ package client
 import (
 	lxd "github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
+	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/config"
 )
 
 type SyncClient struct {
@@ -11,7 +12,7 @@ type SyncClient struct {
 
 func (c *SyncClient) GetConnection() (lxd.InstanceServer, error) {
 	if c.InstanceServer == nil {
-		connection, err := lxd.ConnectLXDUnix("", nil)
+		connection, err := config.GetDefaultInstanceServer()
 		if err != nil {
 			return nil, err
 		}
