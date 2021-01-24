@@ -7,9 +7,6 @@ stages:
 variables:
   BINARY_AMD64: docker-machine-driver-lxd-Linux-x86_64
 
-before_script:
-  - which go && go get -u all
-
 .build: &build
   stage: build
   script:
