@@ -30,7 +30,7 @@ func TestCreate(t *testing.T) {
 	mockSSH.EXPECT().GetPublicKey("machines/host1/id_rsa").Return("ssh-rsa <key>", nil)
 
 	mockServer.EXPECT().CreateContainer(api.ContainersPost{
-		Name: "docker-machine-host1",
+		Name: "host1",
 		Source: api.ContainerSource{
 			Type:     "image",
 			Mode:     "pull",
@@ -41,14 +41,14 @@ func TestCreate(t *testing.T) {
 	}).Return(mockOperation, nil)
 	mockOperation.EXPECT().Wait()
 
-	mockServer.EXPECT().GetContainer("docker-machine-host1").Return(&api.Container{
+	mockServer.EXPECT().GetContainer("host1").Return(&api.Container{
 		ContainerPut: api.ContainerPut{
 			Config: map[string]string{},
 		},
 	}, "tag1", nil)
 
 	mockOperation = mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().UpdateContainer("docker-machine-host1", api.ContainerPut{
+	mockServer.EXPECT().UpdateContainer("host1", api.ContainerPut{
 		Config: map[string]string{
 			"security.nesting": "true",
 			"user.user-data":   "#cloud-config\nssh_authorized_keys:\n  - ssh-rsa <key>",
@@ -57,7 +57,7 @@ func TestCreate(t *testing.T) {
 	mockOperation.EXPECT().Wait()
 
 	mockOperation = mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+	mockServer.EXPECT().UpdateContainerState("host1", api.ContainerStatePut{
 		Action:  "start",
 		Timeout: -1,
 	}, "").Return(mockOperation, nil)
@@ -75,7 +75,7 @@ func TestGetState(t *testing.T) {
 	defer controller.Finish()
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
-	mockServer.EXPECT().GetContainerState("docker-machine-host1").Return(&api.ContainerState{
+	mockServer.EXPECT().GetContainerState("host1").Return(&api.ContainerState{
 		StatusCode: api.Running,
 	}, "", nil)
 
@@ -92,7 +92,7 @@ func TestGetSSHHostname(t *testing.T) {
 	defer controller.Finish()
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
-	mockServer.EXPECT().GetContainerState("docker-machine-host1").Return(&api.ContainerState{
+	mockServer.EXPECT().GetContainerState("host1").Return(&api.ContainerState{
 		Network: map[string]api.ContainerStateNetwork{
 			"eth0": {
 				Addresses: []api.ContainerStateNetworkAddress{
@@ -115,7 +115,7 @@ func TestGetURL(t *testing.T) {
 	defer controller.Finish()
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
-	mockServer.EXPECT().GetContainerState("docker-machine-host1").Return(&api.ContainerState{
+	mockServer.EXPECT().GetContainerState("host1").Return(&api.ContainerState{
 		Network: map[string]api.ContainerStateNetwork{
 			"eth0": {
 				Addresses: []api.ContainerStateNetworkAddress{
@@ -138,7 +138,7 @@ func TestGetURLAddressNotFound(t *testing.T) {
 	defer controller.Finish()
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
-	mockServer.EXPECT().GetContainerState("docker-machine-host1").Return(&api.ContainerState{
+	mockServer.EXPECT().GetContainerState("host1").Return(&api.ContainerState{
 		Network: map[string]api.ContainerStateNetwork{
 			"eth0": {
 				Addresses: []api.ContainerStateNetworkAddress{},
@@ -172,7 +172,7 @@ func TestStop(t *testing.T) {
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
 	mockOperation := mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+	mockServer.EXPECT().UpdateContainerState("host1", api.ContainerStatePut{
 		Action:  "stop",
 		Timeout: -1,
 	}, "").Return(mockOperation, nil)
@@ -191,7 +191,7 @@ func TestKill(t *testing.T) {
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
 	mockOperation := mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+	mockServer.EXPECT().UpdateContainerState("host1", api.ContainerStatePut{
 		Action:  "stop",
 		Timeout: -1,
 	}, "").Return(mockOperation, nil)
@@ -211,14 +211,14 @@ func TestRemove(t *testing.T) {
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
 
 	mockOperation := mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+	mockServer.EXPECT().UpdateContainerState("host1", api.ContainerStatePut{
 		Action:  "stop",
 		Timeout: -1,
 	}, "").Return(mockOperation, nil)
 	mockOperation.EXPECT().Wait().Return(nil)
 
 	mockOperation = mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().DeleteContainer("docker-machine-host1").Return(mockOperation, nil)
+	mockServer.EXPECT().DeleteContainer("host1").Return(mockOperation, nil)
 	mockOperation.EXPECT().Wait().Return(nil)
 
 	driver := CreateTestingDriverProxy("host1", mockServer, nil)
@@ -234,7 +234,7 @@ func TestRestart(t *testing.T) {
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
 	mockOperation := mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+	mockServer.EXPECT().UpdateContainerState("host1", api.ContainerStatePut{
 		Action:  "restart",
 		Timeout: -1,
 	}, "").Return(mockOperation, nil)
@@ -253,7 +253,7 @@ func TestStart(t *testing.T) {
 
 	mockServer := mock_lxd.NewMockInstanceServer(controller)
 	mockOperation := mock_lxd.NewMockOperation(controller)
-	mockServer.EXPECT().UpdateContainerState("docker-machine-host1", api.ContainerStatePut{
+	mockServer.EXPECT().UpdateContainerState("host1", api.ContainerStatePut{
 		Action:  "start",
 		Timeout: -1,
 	}, "").Return(mockOperation, nil)
