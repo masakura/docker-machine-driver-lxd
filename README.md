@@ -34,5 +34,24 @@ $ docker-machine rm docker1
 See [Docker Machine documents](https://docs.docker.com/machine/get-started/) for details on how to use it.
 
 
+## Using remote LXD
+Docker Machine cannot connect SSH in a remote LXD bridge network (eg `lxdbr0`).
+
+You can specify the public network adapter for the LXD host by using the `--lxd-external-network` command line argument. The network is exposed using `macvlan`.
+
+First, set up to connect to the remote LXD.
+
+```
+$ lxc remote add remotelxd 192.168.1.120
+$ lxc remote set-default remotelxd
+```
+
+Run `docker-machine create` with the remote LXD public network adapter.
+
+```
+$ docker-machine create -d lxd --lxd-external-network --lxd-external-network eth0 docker1
+```
+
+
 ## LICENSE
 [MIT LICENSE](./LICENSE.md)
