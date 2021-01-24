@@ -76,7 +76,7 @@ func (p *DriverProxy) GetState() (state.State, error) {
 }
 
 func (p *DriverProxy) GetSSHHostname() (string, error) {
-	container := p.lxdClient.GetContainer("docker-machine-" + p.driver.MachineName)
+	container := p.lxdClient.GetContainer(p.getContainerName())
 
 	containerState, _, err := container.GetState()
 	if err != nil {
@@ -145,7 +145,7 @@ func (p *DriverProxy) Kill() error {
 }
 
 func (p *DriverProxy) getContainerName() string {
-	return "docker-machine-" + p.driver.GetMachineName()
+	return p.driver.GetMachineName()
 }
 
 func (p *DriverProxy) getContainer() *client.LxdContainer {
