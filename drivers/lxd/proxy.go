@@ -16,6 +16,7 @@ type DriverProxy struct {
 	lxdClient  *client.LxdClient
 	ssh        ssh.SSHKeyProvider
 	unixSocket socket.UnixSocketResolver
+	options    Options
 }
 
 func (p *DriverProxy) Create() error {
@@ -40,22 +41,19 @@ func (p *DriverProxy) Create() error {
 	}
 
 	log.Info("Configure LXD container...")
-	settings, tag, err := container.Get()
+	settings, tag, err := container.GetSettings()
 	if err != nil {
 		return err
 	}
-
-	settingsBuilder := client.NewSettingsBuilder(settings)
-	settingsBuilder.Config().Set("security.nesting", "true")
 
 	key, err := s.GetPublicKey(d.GetSSHKeyPath())
 	if err != nil {
 		return err
 	}
 
-	settingsBuilder.Config().Set("user.user-data", "#cloud-config\nssh_authorized_keys:\n  - "+key)
+	NewContainerConfigure(settings).Configure(key, p.options)
 
-	container.Update(settingsBuilder.Writable(), tag)
+	container.Update(settings.Writable(), tag)
 
 	log.Info("Starting LXD container...")
 	err = container.Start()
@@ -157,5 +155,6 @@ func NewDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKe
 		driver:    driver,
 		lxdClient: client.NewLxdClientWith(connection),
 		ssh:       ssh,
+		options:   driver.Options,
 	}
 }

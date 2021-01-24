@@ -48,8 +48,13 @@ func (c *LxdContainer) GetState() (*api.ContainerState, string, error) {
 	return client.GetState(c.Name)
 }
 
-func (c *LxdContainer) Get() (*api.Container, string, error) {
-	return c.Client.GetContainer(c.Name)
+func (c *LxdContainer) GetSettings() (*ContainerSettings, string, error) {
+	container, s, err := c.Client.GetContainer(c.Name)
+	if err != nil {
+		return nil, "", nil
+	}
+
+	return NewContainerSettings(container), s, nil
 }
 
 func (c *LxdContainer) Update(container api.ContainerPut, ETag string) error {
