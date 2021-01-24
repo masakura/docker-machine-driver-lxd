@@ -51,7 +51,7 @@ func (p *DriverProxy) Create() error {
 		return err
 	}
 
-	NewContainerConfigure(settings).Configure(key)
+	NewContainerConfigure(settings).Configure(key, p.options)
 
 	container.Update(settings.Writable(), tag)
 

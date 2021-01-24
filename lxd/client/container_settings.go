@@ -10,6 +10,10 @@ func (b *ContainerSettings) Config() *ContainerConfig {
 	return NewConfigBuilder(b.container.Config)
 }
 
+func (b *ContainerSettings) Devices() *ContainerDevices {
+	return NewContainerDevices(b.container.Devices)
+}
+
 func (b *ContainerSettings) Writable() api.ContainerPut {
 	return b.container.Writable()
 }

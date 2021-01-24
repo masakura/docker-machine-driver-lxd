@@ -11,7 +11,7 @@ func TestConfigure(t *testing.T) {
 	settings := newEmptyContainerSettings()
 	target := NewContainerConfigure(settings)
 
-	target.Configure("[id_rsa.pub]")
+	target.Configure("[id_rsa.pub]", Options{ExternalNetwork: ""})
 
 	assert.Equal(t, map[string]string{
 		"security.nesting": "true",
@@ -19,6 +19,34 @@ func TestConfigure(t *testing.T) {
 	}, settings.Writable().Config)
 }
 
+func TestExternalNetwork(t *testing.T) {
+	settings := newEmptyContainerSettings()
+	target := NewContainerConfigure(settings)
+
+	target.Configure("[id_rsa.pub]", Options{ExternalNetwork: "enp1s0"})
+
+	assert.Equal(t, map[string]map[string]string{
+		"eth0": {
+			"name":    "eth0",
+			"type":    "nic",
+			"nictype": "macvlan",
+			"parent":  "enp1s0",
+		},
+	}, settings.Writable().Devices)
+}
+
+func TestNoExternalNetwork(t *testing.T) {
+	settings := newEmptyContainerSettings()
+	target := NewContainerConfigure(settings)
+
+	target.Configure("[id_rsa.pub]", Options{ExternalNetwork: ""})
+
+	assert.Equal(t, map[string]map[string]string{}, settings.Writable().Devices)
+}
+
 func newEmptyContainerSettings() *client.ContainerSettings {
-	return client.NewContainerSettings(&api.Container{ContainerPut: api.ContainerPut{Config: map[string]string{}}})
+	return client.NewContainerSettings(&api.Container{ContainerPut: api.ContainerPut{
+		Config:  map[string]string{},
+		Devices: map[string]map[string]string{},
+	}})
 }
