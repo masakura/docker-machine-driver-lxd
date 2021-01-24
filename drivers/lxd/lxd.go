@@ -10,6 +10,7 @@ import (
 
 type Driver struct {
 	*drivers.BaseDriver
+	Options Options
 }
 
 func (d *Driver) DriverName() string {
@@ -21,7 +22,13 @@ func (d *Driver) Create() error {
 }
 
 func (d *Driver) GetCreateFlags() []mcnflag.Flag {
-	return []mcnflag.Flag{}
+	return []mcnflag.Flag{
+		mcnflag.StringFlag{
+			Name:   "lxd-external-network",
+			EnvVar: "LXD_EXTERNAL_NETWORK",
+			Usage:  "LXD host network exposed to the external (Not LXD guest)",
+		},
+	}
 }
 
 func (d *Driver) GetIP() (string, error) {
@@ -80,6 +87,7 @@ func (d *Driver) Restart() error {
 }
 
 func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
+	d.Options = NewOptions(opts)
 	return nil
 }
 

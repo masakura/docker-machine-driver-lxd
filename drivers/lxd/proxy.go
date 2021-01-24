@@ -16,6 +16,7 @@ type DriverProxy struct {
 	lxdClient  *client.LxdClient
 	ssh        ssh.SSHKeyProvider
 	unixSocket socket.UnixSocketResolver
+	options    Options
 }
 
 func (p *DriverProxy) Create() error {
@@ -157,5 +158,6 @@ func NewDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKe
 		driver:    driver,
 		lxdClient: client.NewLxdClientWith(connection),
 		ssh:       ssh,
+		options:   driver.Options,
 	}
 }
