@@ -13,7 +13,7 @@
 Install Docker Machine LXD Driver.
 
 ```
-$ sudo wget -O /usr/local/bin/docker-machine-driver-lxd https://gitlab.com/masakura/docker-machine-driver-lxd/-/releases/v0.5.0/downloads/bin/docker-machine-driver-lxd-Linux-x86_64
+$ sudo wget -O /usr/local/bin/docker-machine-driver-lxd https://gitlab.com/masakura/docker-machine-driver-lxd/-/releases/v0.6.0/downloads/bin/docker-machine-driver-lxd-Linux-x86_64
 $ sudo chmod +x /usr/local/bin/docker-machine-driver-lxd
 ```
 
