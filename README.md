@@ -48,13 +48,12 @@ First, set up to connect to the remote LXD.
 
 ```
 $ lxc remote add remotelxd 192.168.1.120
-$ lxc remote set-default remotelxd
 ```
 
 Run `docker-machine create` with the remote LXD public network adapter.
 
 ```
-$ docker-machine create -d lxd --lxd-external-network --lxd-external-network eth0 docker1
+$ docker-machine create -d lxd --lxc-remote remotelxd --lxd-external-network eth0 docker1
 ```
 
 
