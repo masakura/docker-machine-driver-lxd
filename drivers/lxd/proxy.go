@@ -23,7 +23,7 @@ type DriverProxy struct {
 func (p *DriverProxy) Create() error {
 	c := p.lxdClient
 	d := p.driver
-	s := p.GetSSHKeyProvider()
+	s := p.ssh
 
 	if err := s.Generate(d.GetSSHKeyPath()); err != nil {
 		return err
@@ -89,14 +89,6 @@ func (p *DriverProxy) GetSSHHostname() (string, error) {
 	return "", nil
 }
 
-func (p *DriverProxy) GetSSHKeyProvider() ssh.SSHKeyProvider {
-	if p.ssh != nil {
-		return p.ssh
-	}
-
-	return ssh.NewSSHKeyProvider()
-}
-
 func (p *DriverProxy) GetSSHUsername() string {
 	return p.driver.GetSSHUsername()
 }
@@ -157,7 +149,7 @@ func NewDriverProxy(driver *Driver) *DriverProxy {
 		panic(err)
 	}
 
-	return newDriverProxy(driver, connection, nil)
+	return newDriverProxy(driver, connection, ssh.NewSSHKeyProvider())
 }
 
 func newDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
