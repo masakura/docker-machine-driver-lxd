@@ -3,6 +3,7 @@ package lxd
 import (
 	"github.com/lxc/lxd/shared/api"
 	"github.com/stretchr/testify/assert"
+	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/options"
 	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/client"
 	"testing"
 )
@@ -11,7 +12,7 @@ func TestConfigure(t *testing.T) {
 	settings := newEmptyContainerSettings()
 	target := NewContainerConfigure(settings)
 
-	target.Configure("[id_rsa.pub]", Options{ExternalNetwork: ""})
+	target.Configure("[id_rsa.pub]", options.Options{ExternalNetwork: ""})
 
 	assert.Equal(t, map[string]string{
 		"security.nesting": "true",
@@ -23,7 +24,7 @@ func TestExternalNetwork(t *testing.T) {
 	settings := newEmptyContainerSettings()
 	target := NewContainerConfigure(settings)
 
-	target.Configure("[id_rsa.pub]", Options{ExternalNetwork: "enp1s0"})
+	target.Configure("[id_rsa.pub]", options.Options{ExternalNetwork: "enp1s0"})
 
 	assert.Equal(t, map[string]map[string]string{
 		"eth0": {
@@ -39,7 +40,7 @@ func TestNoExternalNetwork(t *testing.T) {
 	settings := newEmptyContainerSettings()
 	target := NewContainerConfigure(settings)
 
-	target.Configure("[id_rsa.pub]", Options{ExternalNetwork: ""})
+	target.Configure("[id_rsa.pub]", options.Options{ExternalNetwork: ""})
 
 	assert.Equal(t, map[string]map[string]string{}, settings.Writable().Devices)
 }

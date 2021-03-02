@@ -267,7 +267,7 @@ func TestStart(t *testing.T) {
 }
 
 func CreateTestingDriverProxy(name string, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
-	return NewDriverProxy(&Driver{
+	return newDriverProxy(&Driver{
 		BaseDriver: newBaseDriver(name, ""),
 	}, connection, ssh)
 }

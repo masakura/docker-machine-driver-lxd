@@ -5,6 +5,8 @@ import (
 	"github.com/docker/machine/libmachine/state"
 	lxd "github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
+	connection2 "gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/connection"
+	options2 "gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/options"
 	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/utils"
 	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/client"
 	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/socket"
@@ -16,13 +18,13 @@ type DriverProxy struct {
 	lxdClient  *client.LxdClient
 	ssh        ssh.SSHKeyProvider
 	unixSocket socket.UnixSocketResolver
-	options    Options
+	options    options2.Options
 }
 
 func (p *DriverProxy) Create() error {
 	c := p.lxdClient
 	d := p.driver
-	s := p.GetSSHKeyProvider()
+	s := p.ssh
 
 	if err := s.Generate(d.GetSSHKeyPath()); err != nil {
 		return err
@@ -88,14 +90,6 @@ func (p *DriverProxy) GetSSHHostname() (string, error) {
 	return "", nil
 }
 
-func (p *DriverProxy) GetSSHKeyProvider() ssh.SSHKeyProvider {
-	if p.ssh != nil {
-		return p.ssh
-	}
-
-	return ssh.NewSSHKeyProvider()
-}
-
 func (p *DriverProxy) GetSSHUsername() string {
 	return p.driver.GetSSHUsername()
 }
@@ -150,7 +144,16 @@ func (p *DriverProxy) getContainer() *client.LxdContainer {
 	return p.lxdClient.GetContainer(p.getContainerName())
 }
 
-func NewDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
+func NewDriverProxy(driver *Driver) *DriverProxy {
+	connection, err := connection2.GetConnection(driver.Options)
+	if err != nil {
+		panic(err)
+	}
+
+	return newDriverProxy(driver, connection, ssh.NewSSHKeyProvider())
+}
+
+func newDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
 	return &DriverProxy{
 		driver:    driver,
 		lxdClient: client.NewLxdClientWith(connection),

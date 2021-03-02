@@ -6,19 +6,20 @@ import (
 	"github.com/docker/machine/libmachine/mcnflag"
 	"github.com/docker/machine/libmachine/state"
 	"github.com/pkg/errors"
+	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/options"
 )
 
 type Driver struct {
 	*drivers.BaseDriver
-	Options Options
+	Options options.Options
 }
 
 func (d *Driver) DriverName() string {
-	return NewDriverProxy(d, nil, nil).DriverName()
+	return d.proxy().DriverName()
 }
 
 func (d *Driver) Create() error {
-	return NewDriverProxy(d, nil, nil).Create()
+	return d.proxy().Create()
 }
 
 func (d *Driver) GetCreateFlags() []mcnflag.Flag {
@@ -28,6 +29,11 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 			EnvVar: "LXD_EXTERNAL_NETWORK",
 			Usage:  "LXD host network exposed to the external (Not LXD guest)",
 		},
+		mcnflag.StringFlag{
+			Name:   "lxd-remote",
+			EnvVar: "LXD_REMOTE",
+			Usage:  "LXD remote name",
+		},
 	}
 }
 
@@ -36,7 +42,7 @@ func (d *Driver) GetIP() (string, error) {
 }
 
 func (d *Driver) GetSSHHostname() (string, error) {
-	hostname, err := NewDriverProxy(d, nil, nil).GetSSHHostname()
+	hostname, err := d.proxy().GetSSHHostname()
 	if err != nil {
 		return "", err
 	}
@@ -55,7 +61,7 @@ func (d *Driver) GetSSHUsername() string {
 }
 
 func (d *Driver) GetURL() (string, error) {
-	url, err := NewDriverProxy(d, nil, nil).GetURL()
+	url, err := d.proxy().GetURL()
 	if err != nil {
 		log.Error(err)
 		return "", err
@@ -66,7 +72,7 @@ func (d *Driver) GetURL() (string, error) {
 }
 
 func (d *Driver) GetState() (state.State, error) {
-	machineState, err := NewDriverProxy(d, nil, nil).GetState()
+	machineState, err := d.proxy().GetState()
 	if err != nil {
 		return state.None, err
 	}
@@ -75,28 +81,32 @@ func (d *Driver) GetState() (state.State, error) {
 }
 
 func (d *Driver) Kill() error {
-	return NewDriverProxy(d, nil, nil).Kill()
+	return d.proxy().Kill()
 }
 
 func (d *Driver) Remove() error {
-	return NewDriverProxy(d, nil, nil).Remove()
+	return d.proxy().Remove()
 }
 
 func (d *Driver) Restart() error {
-	return NewDriverProxy(d, nil, nil).Restart()
+	return d.proxy().Restart()
 }
 
 func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
-	d.Options = NewOptions(opts)
+	d.Options = options.NewOptions(opts)
 	return nil
 }
 
 func (d *Driver) Start() error {
-	return NewDriverProxy(d, nil, nil).Start()
+	return d.proxy().Start()
 }
 
 func (d *Driver) Stop() error {
-	return NewDriverProxy(d, nil, nil).Stop()
+	return d.proxy().Stop()
+}
+
+func (d *Driver) proxy() *DriverProxy {
+	return NewDriverProxy(d)
 }
 
 func NewDriver(hostName string, storePath string) *Driver {

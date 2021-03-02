@@ -1,12 +1,15 @@
 package lxd
 
-import "gitlab.com/masakura/docker-machine-driver-lxd/lxd/client"
+import (
+	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/options"
+	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/client"
+)
 
 type ConfigureContainer struct {
 	settings *client.ContainerSettings
 }
 
-func (c ConfigureContainer) Configure(sshPublicKey string, options Options) {
+func (c ConfigureContainer) Configure(sshPublicKey string, options options.Options) {
 	c.enableSecurityNesting()
 	c.addAuthorizedKeys(sshPublicKey)
 	c.addExternalNetwork(options.ExternalNetwork)
