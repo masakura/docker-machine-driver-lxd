@@ -15,7 +15,7 @@ $ sudo chmod +x /usr/local/bin/docker-machine-driver-lxd
 Create Docker Machine.
 
 ```
-$ docker-machine create -d lxd --engine-storage-driver btrfs docker1
+$ docker-machine create -d lxd docker1
 ```
 
 Use Docker Machine.
