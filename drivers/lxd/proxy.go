@@ -5,9 +5,10 @@ import (
 	"github.com/docker/machine/libmachine/state"
 	lxd "github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
+	connection2 "gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/connection"
+	options2 "gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/options"
 	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/utils"
 	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/client"
-	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/config"
 	"gitlab.com/masakura/docker-machine-driver-lxd/lxd/socket"
 	"gitlab.com/masakura/docker-machine-driver-lxd/ssh"
 )
@@ -17,7 +18,7 @@ type DriverProxy struct {
 	lxdClient  *client.LxdClient
 	ssh        ssh.SSHKeyProvider
 	unixSocket socket.UnixSocketResolver
-	options    Options
+	options    options2.Options
 }
 
 func (p *DriverProxy) Create() error {
@@ -144,7 +145,7 @@ func (p *DriverProxy) getContainer() *client.LxdContainer {
 }
 
 func NewDriverProxy(driver *Driver) *DriverProxy {
-	connection, err := config.GetDefaultInstanceServer()
+	connection, err := connection2.GetConnection(driver.Options)
 	if err != nil {
 		panic(err)
 	}

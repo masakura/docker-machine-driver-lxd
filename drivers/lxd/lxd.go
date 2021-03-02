@@ -6,11 +6,12 @@ import (
 	"github.com/docker/machine/libmachine/mcnflag"
 	"github.com/docker/machine/libmachine/state"
 	"github.com/pkg/errors"
+	"gitlab.com/masakura/docker-machine-driver-lxd/drivers/lxd/options"
 )
 
 type Driver struct {
 	*drivers.BaseDriver
-	Options Options
+	Options options.Options
 }
 
 func (d *Driver) DriverName() string {
@@ -27,6 +28,11 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 			Name:   "lxd-external-network",
 			EnvVar: "LXD_EXTERNAL_NETWORK",
 			Usage:  "LXD host network exposed to the external (Not LXD guest)",
+		},
+		mcnflag.StringFlag{
+			Name:   "lxd-remote",
+			EnvVar: "LXD_REMOTE",
+			Usage:  "LXD remote name",
 		},
 	}
 }
@@ -87,7 +93,7 @@ func (d *Driver) Restart() error {
 }
 
 func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
-	d.Options = NewOptions(opts)
+	d.Options = options.NewOptions(opts)
 	return nil
 }
 
