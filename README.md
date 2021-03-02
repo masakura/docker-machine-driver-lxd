@@ -1,6 +1,11 @@
 # Docker Machine LXD Driver
 
 
+## System requirements
+* OS - Ubuntu 20.04
+* LXD storage driver - btrfs
+
+
 ## Getting started
 * [Install LXD](https://linuxcontainers.org/lxd/getting-started-cli/#installation).
 * [Install Docker Machine](https://docs.docker.com/machine/install-machine/).
