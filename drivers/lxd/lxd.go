@@ -14,11 +14,11 @@ type Driver struct {
 }
 
 func (d *Driver) DriverName() string {
-	return NewDriverProxy(d, nil, nil).DriverName()
+	return d.proxy().DriverName()
 }
 
 func (d *Driver) Create() error {
-	return NewDriverProxy(d, nil, nil).Create()
+	return d.proxy().Create()
 }
 
 func (d *Driver) GetCreateFlags() []mcnflag.Flag {
@@ -36,7 +36,7 @@ func (d *Driver) GetIP() (string, error) {
 }
 
 func (d *Driver) GetSSHHostname() (string, error) {
-	hostname, err := NewDriverProxy(d, nil, nil).GetSSHHostname()
+	hostname, err := d.proxy().GetSSHHostname()
 	if err != nil {
 		return "", err
 	}
@@ -55,7 +55,7 @@ func (d *Driver) GetSSHUsername() string {
 }
 
 func (d *Driver) GetURL() (string, error) {
-	url, err := NewDriverProxy(d, nil, nil).GetURL()
+	url, err := d.proxy().GetURL()
 	if err != nil {
 		log.Error(err)
 		return "", err
@@ -66,7 +66,7 @@ func (d *Driver) GetURL() (string, error) {
 }
 
 func (d *Driver) GetState() (state.State, error) {
-	machineState, err := NewDriverProxy(d, nil, nil).GetState()
+	machineState, err := d.proxy().GetState()
 	if err != nil {
 		return state.None, err
 	}
@@ -75,15 +75,15 @@ func (d *Driver) GetState() (state.State, error) {
 }
 
 func (d *Driver) Kill() error {
-	return NewDriverProxy(d, nil, nil).Kill()
+	return d.proxy().Kill()
 }
 
 func (d *Driver) Remove() error {
-	return NewDriverProxy(d, nil, nil).Remove()
+	return d.proxy().Remove()
 }
 
 func (d *Driver) Restart() error {
-	return NewDriverProxy(d, nil, nil).Restart()
+	return d.proxy().Restart()
 }
 
 func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
@@ -92,11 +92,15 @@ func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 }
 
 func (d *Driver) Start() error {
-	return NewDriverProxy(d, nil, nil).Start()
+	return d.proxy().Start()
 }
 
 func (d *Driver) Stop() error {
-	return NewDriverProxy(d, nil, nil).Stop()
+	return d.proxy().Stop()
+}
+
+func (d *Driver) proxy() *DriverProxy {
+	return NewDriverProxy(d)
 }
 
 func NewDriver(hostName string, storePath string) *Driver {

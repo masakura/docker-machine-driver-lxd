@@ -150,7 +150,11 @@ func (p *DriverProxy) getContainer() *client.LxdContainer {
 	return p.lxdClient.GetContainer(p.getContainerName())
 }
 
-func NewDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
+func NewDriverProxy(driver *Driver) *DriverProxy {
+	return newDriverProxy(driver, nil, nil)
+}
+
+func newDriverProxy(driver *Driver, connection lxd.InstanceServer, ssh ssh.SSHKeyProvider) *DriverProxy {
 	return &DriverProxy{
 		driver:    driver,
 		lxdClient: client.NewLxdClientWith(connection),
